@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplicación CRUD</title>
+    <style></style>
+</head>
+<body>
+    <h1>Aplicación CRUD</h1>
+
+    <!-- Formulario para crear un nuevo registro -->
+    <h1>Formulario de pedido</h1>
+
+    <form action="/pedidos" method="post">
+        <input type="hidden" name="id" value="{{ id }}">
+
+        <label for="cliente">Cliente:</label>
+        <input type="text" id="cliente" name="cliente" required>
+
+        <label for="platos">Platos (separados por comas):</label>
+        <input type="text" id="platos" name="platos" required>
+
+        <label for="total">Total:</label>
+        <input type="number" id="total" name="total" step="0.01" required>
+
+        <input type="hidden" name="fecha" value="{{ fecha }}">
+
+        <button type="submit">Enviar pedido</button>
+    </form>
+    <h1>Pedidos Recibidos</h1>
+    <ul>
+        {% for pedido in products %}
+            <li>{{ pedido }}</li>
+        {% endfor %}
+    </ul>
+
+
+    <h1>Editar Pedido</h1>
+    <form action="/buscar_pedido" method="POST">
+        <label for="id">ID del Pedido:</label>
+        <input type="text" id="id" name="id" required>
+        <input type="submit" value="Buscar Pedido">
+    </form>
+
+    {% if pedido %}
+    <h2>Detalles del Pedido</h2>
+    <ul>
+        <li>ID: {{ pedido._id }}</li>
+        <li>Total: {{ pedido.total }}</li>
+        <!-- Añadir más campos según los datos del pedido -->
+    </ul>
+
+    <form action="/edit" method="POST">
+        <input type="hidden" id="id" name="id" value="{{ pedido._id }}">
+        <label for="total">Nuevo Total:</label>
+        <input type="number" id="total" name="total" step="0.01" required>
+        <br><br>
+        <input type="submit" value="Actualizar Pedido">
+    </form>
+    {% endif %}
+
+    {% if error %}
+    <p style="color:red;">{{ error }}</p>
+    {% endif %}
+
+  <!--Elimitar por cliente-->
+
+  <h1>Eliminar todos los pedidos de un cliente</h1>
+  <form action="{{ url_for('delete') }}" method="POST">
+      <label for="cliente">Cliente:</label>
+      <input type="text" id="cliente" name="cliente" required>
+      <input type="submit" value="Eliminar cliente">
+  </form>
+  
+
+
+<!--Flash-->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <ul>
+      {% for category, message in messages %}
+        <li class="flash {{ category }}">{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+</body>
+</html>
